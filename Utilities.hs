@@ -315,6 +315,15 @@ implies :: Bool -> Bool -> Bool
 implies cond consq = not cond || consq
 
 
+seperate :: Eq a => a -> [a] -> [[a]]
+seperate c = go []
+  where
+    go sofar [] = [reverse sofar]
+    go sofar (x:xs)
+      | x == c    = reverse sofar : go [] xs
+      | otherwise = go (x:sofar) xs
+
+
 type Seconds = Double
 
 time_ :: IO a -> IO Seconds

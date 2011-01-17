@@ -61,6 +61,11 @@ printingModule wrapper e = unlines $
 
 
 
+ghcVersion :: IO [Int]
+ghcVersion = do
+    (ExitSuccess, compile_out, "") <- readProcessWithExitCode "ghc" ["--version"] ""
+    return $ map read . seperate '.' . last . words $ compile_out
+
 typechecks :: String -> Term -> IO Bool
 typechecks wrapper term = do
     (ec, _out, err) <- withTempFile "Main.hs" $ \(file, h) -> do
@@ -93,7 +98,8 @@ runCompiled wrapper e test_e = withTempFile "Main" $ \(exe_file, exe_h) -> do
     (compile_t, (ec, compile_out, compile_err)) <- withTempFile "Main.hs" $ \(hs_file, hs_h) -> do
         hPutStr hs_h haskell
         hClose hs_h
-        time $ readProcessWithExitCode "ghc" (["--make", "-O2", hs_file, "-fforce-recomp", "-o", exe_file] ++ ["-ddump-simpl" | not qUIET]) "" --  
+        ghc_ver <- ghcVersion
+        time $ readProcessWithExitCode "ghc" (["--make", "-O2", hs_file, "-fforce-recomp", "-o", exe_file] ++ ["-ddump-simpl" | not qUIET] ++ ["-rtsopts" | ghc_ver >= [7]]) "" --  
     compiled_size <- fileSize exe_file
     case ec of
       ExitFailure _ -> putStrLn haskell >> return (haskell, Left compile_err)
