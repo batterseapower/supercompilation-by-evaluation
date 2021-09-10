@@ -12,12 +12,38 @@ Category:           Language
 
 Executable supercompile
     Main-Is:        Main.hs
-    Build-Depends:  base >= 4 && < 5, containers >= 0.3 && < 0.5, deepseq >= 1.1.0.0 && < 1.2,
-                    pretty >= 1.0.1.1 && < 1.1, prettyclass >= 1 && < 1.2,
-                    QuickCheck >= 2.4.0.1 && < 2.5,
-                    random >= 1.0 && < 1.1, process >= 1.0.1.2 && < 1.1,
-                    directory >= 1.0.1.0 && < 1.2, filepath >= 1.1.0.3 && < 1.3,
-                    time >= 1.1.4 && < 1.3,
-                    haskell-src-exts >= 1.9.0 && < 1.10.0, cpphs >= 1.11 && < 1.12
-    
+    other-modules:
+      Core.FreeVars
+      Core.Parser
+      Core.Prelude
+      Core.Renaming
+      Core.Syntax
+      Evaluator.Evaluate
+      Evaluator.FreeVars
+      Evaluator.Syntax
+      GHC
+      IdSupply
+      Name
+      Renaming
+      StaticFlags
+      Supercompile.Drive
+      Supercompile.Match
+      Supercompile.Residualise
+      Supercompile.Split
+      Termination.Terminate
+      Utilities
+
+    Build-Depends:
+       base >= 4 && < 5,
+       containers,
+       deepseq,
+       pretty,
+       QuickCheck,
+       random,
+       process,
+       directory,
+       filepath,
+       time,
+       haskell-src-exts,
+       cpphs
     Ghc-Options:    -fwarn-unused-binds -fwarn-unused-imports -fwarn-unused-matches -fwarn-incomplete-patterns

@@ -113,6 +113,10 @@ newtype ScpM a = ScpM { unScpM :: ScpState -> (ScpState, a) }
 instance Functor ScpM where
     fmap = liftM
 
+instance Applicative ScpM where
+  pure x = ScpM $ \s -> (s, x)
+  fab <*> fa = ScpM $ \s -> case (unScpM fab) s of (s', ab) -> case (unScpM fa) s' of (s'', a) -> (s'', ab a)
+
 instance Monad ScpM where
     return x = ScpM $ \s -> (s, x)
     (!mx) >>= fxmy = ScpM $ \s -> case unScpM mx s of (s, x) -> unScpM (fxmy x) s
