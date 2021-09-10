@@ -201,6 +201,10 @@ literalCore (LHE.Char c) = fmap var $ charWrapper c
 literalCore (LHE.String s) = mapM (literalCore . LHE.Char) s >>= list
 
 altCore :: LHE.Alt -> ParseM Alt
+altCore (LHE.Alt _loc pat (LHE.UnGuardedRhs e) Nothing) = do
+    e <- expCore e
+    return (altcon, build e)
+  where (altcon, build) = altPatCore pat
 altCore (LHE.Alt _loc pat (LHE.UnGuardedRhs e) (Just (LHE.BDecls binds))) = do
     xes <- declsCore binds
     e <- expCore e
